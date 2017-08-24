@@ -23,6 +23,7 @@ import (
 	"google.golang.org/appengine/log"
 
 	. "github.com/zond/goaeoas"
+	dip "github.com/zond/godip/common"
 	oauth2service "google.golang.org/api/oauth2/v2"
 )
 
@@ -193,6 +194,7 @@ type User struct {
 	Link          string
 	Locale        string
 	Name          string
+	NationColors  map[dip.Nation]string
 	Picture       string
 	VerifiedEmail bool
 	ValidUntil    time.Time

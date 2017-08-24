@@ -1263,9 +1263,13 @@ func renderPhaseMap(w ResponseWriter, r Request) error {
 		return err
 	}
 
+	nationColors := make(map[dip.Nation]string)
 	ordersToDisplay := map[dip.Nation]map[dip.Province][]string{}
 	for nat, orders := range foundOrders {
 		log.Infof(ctx, "%#v == %#v => %v", nat, nation, nat == nation)
+		if nat == nation {
+			nationColors[nat] = "'#ff0000'"
+		}
 		if nat == nation || phase.Resolved {
 			ordersToDisplay[nat] = orders
 		}
@@ -1273,7 +1277,7 @@ func renderPhaseMap(w ResponseWriter, r Request) error {
 
 	vPhase := phase.toVariantsPhase(game.Variant, ordersToDisplay)
 
-	return dvars.RenderPhaseMap(w, r, vPhase)
+	return dvars.RenderPhaseMap(w, r, vPhase, nationColors)
 }
 
 func listPhases(w ResponseWriter, r Request) error {

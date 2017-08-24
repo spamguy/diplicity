@@ -7,6 +7,7 @@ import (
 	"github.com/zond/godip/variants"
 
 	. "github.com/zond/goaeoas"
+	dip "github.com/zond/godip/common"
 )
 
 func handleRenderMap(w ResponseWriter, r Request) error {
@@ -17,10 +18,10 @@ func handleRenderMap(w ResponseWriter, r Request) error {
 		return err
 	}
 
-	return RenderPhaseMap(w, r, phase)
+	return RenderPhaseMap(w, r, phase, make(map[dip.Nation]string))
 }
 
-func RenderPhaseMap(w ResponseWriter, r Request, phase *Phase) error {
+func RenderPhaseMap(w ResponseWriter, r Request, phase *Phase, nationColors map[dip.Nation]string) error {
 	variant := variants.Variants[phase.Variant]
 
 	mapURL, err := router.Get(VariantMapRoute).URL("name", phase.Variant)
@@ -37,7 +38,11 @@ func RenderPhaseMap(w ResponseWriter, r Request, phase *Phase) error {
 
 	jsBuf := []string{}
 	for i, nat := range variant.Nations {
-		jsBuf = append(jsBuf, fmt.Sprintf("col%s = map.contrasts[%d];", nat, i))
+		color, ok := nationColors[nat]
+		if !ok {
+			color = fmt.Sprintf("map.contrasts[%d]", i)
+		}
+		jsBuf = append(jsBuf, fmt.Sprintf("col%s = %s;", nat, color))
 	}
 	for prov, unit := range phase.Units {
 		jsBuf = append(jsBuf, fmt.Sprintf("map.addUnit('unit%s', %q, col%s);", unit.Type, prov, unit.Nation))
