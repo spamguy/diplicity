@@ -13,7 +13,7 @@ import (
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/datastore"
 
-	. "github.com/zond/goaeoas"
+	"github.com/zond/goaeoas"
 )
 
 func preflight(w http.ResponseWriter, r *http.Request) {
@@ -60,6 +60,7 @@ const (
 	DevUserStatsUpdateRoute     = "DevUserStatsUpdate"
 	ReceiveMailRoute            = "ReceiveMail"
 	RenderPhaseMapRoute         = "RenderPhaseMap"
+	RenderPhaseMapSVGRoute      = "RenderPhaseMapSVG"
 	ReRateRoute                 = "ReRate"
 )
 
@@ -438,6 +439,7 @@ func SetupRouter(r *mux.Router) {
 	Handle(r, "/User/{user_id}/Stats/_dev_update", []string{"PUT"}, DevUserStatsUpdateRoute, devUserStatsUpdate)
 	Handle(r, "/Game/{game_id}/Phase/{phase_ordinal}/Options", []string{"GET"}, ListOptionsRoute, listOptions)
 	Handle(r, "/Game/{game_id}/Phase/{phase_ordinal}/Map", []string{"GET"}, RenderPhaseMapRoute, renderPhaseMap)
+	Handle(r, "/Game/{game_id}/Phase/{phase_ordinal}/SVG", []string{"GET"}, RenderPhaseMapSVGRoute, renderPhaseMapSVG)
 	HandleResource(r, GameResource)
 	HandleResource(r, MemberResource)
 	HandleResource(r, PhaseResource)

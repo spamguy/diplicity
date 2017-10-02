@@ -6,7 +6,7 @@ import (
 
 	"github.com/zond/godip/variants"
 
-	. "github.com/zond/goaeoas"
+	"github.com/zond/goaeoas"
 )
 
 func handleRenderMap(w ResponseWriter, r Request) error {
@@ -20,6 +20,24 @@ func handleRenderMap(w ResponseWriter, r Request) error {
 	return RenderPhaseMap(w, r, phase)
 }
 
+// RenderPhaseMapSVG renders the phase map as a lone SVG element, without accompanying JavaScript.
+func RenderPhaseMapSVG(w ResponseWriter, r Request, phase *Phase) error {
+	variant := variants.Variants[phase.Variant]
+
+	mapURL, err := router.Get(VariantMapRoute).URL("name", phase.Variant)
+	if err != nil {
+		return err
+	}
+
+	w.Header().Set("Content-Type", "image/svg+xml; charset=utf-8")
+
+	htmlNode := NewEl("html")
+
+	return htmlNode.Render(w);
+}
+
+// RenderPhaseMap renders an HTML document containing JavaScript necessary to generate a full phase SVG map.
+// The base variant map is fetched via AJAX and then modified with context from the phase.
 func RenderPhaseMap(w ResponseWriter, r Request, phase *Phase) error {
 	variant := variants.Variants[phase.Variant]
 
